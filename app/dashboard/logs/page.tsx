@@ -1121,7 +1121,7 @@ function ProbeTab({ bookmakers }: { bookmakers: Bookmaker[] }) {
     </div>
   );
 }
-s View Tab — browse cached unified odds ───────────────────────────────
+// s View Tab — browse cached unified odds ───────────────────────────────
 function OddsViewTab({ bookmakers, onMatchClick }: { bookmakers: Bookmaker[]; onMatchClick?: (m: any) => void }) {
   const [sport,    setSport]   = useState('Football');
   const [mode,     setMode]    = useState('upcoming');
@@ -1732,7 +1732,7 @@ function BookmakerConfigTab({ bookmakers, onRefresh }: { bookmakers: Bookmaker[]
 
   // ── Clear config ──────────────────────────────────────────────────────────
   const clearConfig = async () => {
-    if (!selected || !confirm('Clear this bookmaker's harvest config?')) return;
+    if (!selected || !confirm(`Clear this bookmaker's harvest config?`)) return;
     setDeleting(true);
     try {
       await fetchWithAuth(`/bookmakers/${selected}/config`, { method: 'DELETE' });
