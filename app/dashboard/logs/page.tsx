@@ -15,7 +15,8 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { fetchWithAuth } from '../../lib/api';
-import MatchDetailView from './match-details';
+import MatchDetailView from './MatchDetailView';
+import SboTab from './SboTab';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -74,6 +75,9 @@ interface CacheKey {
 const M = "'IBM Plex Mono','Fira Code',monospace";
 const SPORTS = ['Football','Basketball','Ice Hockey','Tennis','Volleyball','Cricket','Rugby'];
 const MODES  = ['upcoming','live'];
+
+// SBO tab accent colour
+const SBO_GOLD = '#F5C842';
 
 // ─── Styles ───────────────────────────────────────────────────────────────────
 
@@ -262,7 +266,7 @@ function MonitorTab({ bookmakers }: { bookmakers: Bookmaker[] }) {
         <Stat label="LIVE MATCHES"     value={data?.live_matches    ?? '…'} color="var(--cyan)" />
         <Stat label="CACHED UPCOMING"  value={data?.cached_upcoming ?? '…'} color="var(--text-muted)" sub="keys" />
         <Stat label="CACHED LIVE"      value={data?.cached_live     ?? '…'} color="var(--text-muted)" sub="keys" />
-        <Stat label="BOOKMAKERS"       value={bookmakers?.filter(b=>b.is_active).length} color="#fb923c" />
+        <Stat label="BOOKMAKERS"       value={bookmakers.filter(b=>b.is_active).length} color="#fb923c" />
       </div>
 
       {/* Beat status */}
@@ -459,7 +463,7 @@ interface ProbeMatchData {
 }
 
 function ProbeMatchCard({ match, bkNames, defaultOpen = false }: {
-  match: ProbeMatchData; bkNames: string[]; defaultOpen?: boolean; onClick?: () => void;
+  match: ProbeMatchData; bkNames: string[]; defaultOpen?: boolean;
 }) {
   const [open, setOpen] = (useState as any)(defaultOpen);
   const isLive    = match.status === 'live';
@@ -1117,7 +1121,7 @@ function ProbeTab({ bookmakers }: { bookmakers: Bookmaker[] }) {
     </div>
   );
 }
-// s View Tab — browse cached unified odds ───────────────────────────────
+s View Tab — browse cached unified odds ───────────────────────────────
 function OddsViewTab({ bookmakers, onMatchClick }: { bookmakers: Bookmaker[]; onMatchClick?: (m: any) => void }) {
   const [sport,    setSport]   = useState('Football');
   const [mode,     setMode]    = useState('upcoming');
@@ -1728,7 +1732,7 @@ function BookmakerConfigTab({ bookmakers, onRefresh }: { bookmakers: Bookmaker[]
 
   // ── Clear config ──────────────────────────────────────────────────────────
   const clearConfig = async () => {
-    if (!selected || !confirm(`Clear this bookmaker's harvest config?`)) return;
+    if (!selected || !confirm('Clear this bookmaker's harvest config?')) return;
     setDeleting(true);
     try {
       await fetchWithAuth(`/bookmakers/${selected}/config`, { method: 'DELETE' });
@@ -2048,7 +2052,7 @@ function BookmakerConfigTab({ bookmakers, onRefresh }: { bookmakers: Bookmaker[]
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
 export default function AdminOddsMonitor() {
-  const [tab,        setTab]        = useState<'monitor'|'probe'|'odds'|'config'>('monitor');
+  const [tab,        setTab]        = useState<'monitor'|'probe'|'odds'|'sbo'|'config'>('monitor');
   const [bookmakers, setBookmakers] = useState<Bookmaker[]>([]);
   const [detailMatch, setDetailMatch] = useState<any>(null);
 
@@ -2062,11 +2066,12 @@ export default function AdminOddsMonitor() {
   useEffect(() => { loadBks(); }, [loadBks]);
 
   const TABS = [
-    { key:'monitor', label:'⚙ MONITOR'  },
-    { key:'probe',   label:'▶ PROBE'    },
-    { key:'odds',    label:'📊 ODDS'    },
-    { key:'config',  label:'🔧 CONFIG'  },
-  ] as const;
+    { key: 'monitor' as const, label: '⚙ MONITOR', accent: 'var(--acid)' },
+    { key: 'probe'   as const, label: '▶ PROBE',   accent: 'var(--acid)' },
+    { key: 'odds'    as const, label: '📊 ODDS',   accent: 'var(--acid)' },
+    { key: 'sbo'     as const, label: '⚡ SBO',    accent: SBO_GOLD      },
+    { key: 'config'  as const, label: '🔧 CONFIG', accent: 'var(--acid)' },
+  ];
 
   return (
     <div style={{ maxWidth:1300, margin:'0 auto', fontFamily:M }}>
@@ -2075,26 +2080,46 @@ export default function AdminOddsMonitor() {
         <div>
           <h1 style={{ fontFamily:M, fontSize:20, fontWeight:800, letterSpacing:3, margin:0, color:'var(--acid)' }}>ODDS MONITOR</h1>
           <p style={{ fontFamily:M, fontSize:8, letterSpacing:3, color:'var(--text-muted)', marginTop:4, marginBottom:0 }}>
-            {bookmakers?.filter(b=>b.is_active).length} ACTIVE BOOKMAKERS · CELERY WORKERS
+            {bookmakers.filter(b=>b.is_active).length} ACTIVE BOOKMAKERS · CELERY WORKERS
           </p>
         </div>
-        <a href="/odds/sport/Football" target="_blank" style={{ ...s.ghost, textDecoration:'none', fontSize:8 }}>
-          PUBLIC API →
-        </a>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '4px 10px',
+            background: `${SBO_GOLD}0A`, border: `1px solid ${SBO_GOLD}33` }}>
+            <div style={{ width: 6, height: 6, borderRadius: '50%', background: SBO_GOLD,
+              boxShadow: `0 0 5px ${SBO_GOLD}` }} />
+            <span style={{ fontFamily: M, fontSize: 7, color: SBO_GOLD, letterSpacing: 1 }}>SBO ENGINE</span>
+          </div>
+          <a href="/odds/sport/Football" target="_blank" style={{ ...s.ghost, textDecoration: 'none', fontSize: 8 }}>
+            PUBLIC API →
+          </a>
+        </div>
       </div>
 
       {/* Tab nav */}
-      <div style={{ display:'flex', borderBottom:'2px solid var(--border-dim)', marginBottom:16 }}>
-        {TABS.map(t => (
-          <button key={t.key} onClick={()=>setTab(t.key)} style={{
-            fontFamily:M, fontSize:8, letterSpacing:2, padding:'9px 18px',
-            background:tab===t.key?'var(--bg-surface)':'transparent',
-            border:'none', borderBottom:`2px solid ${tab===t.key?'var(--acid)':'transparent'}`,
-            marginBottom:-2, cursor:'pointer', color:tab===t.key?'var(--acid)':'var(--text-muted)',
-          }}>
-            {t.label}
-          </button>
-        ))}
+      <div style={{ display: 'flex', borderBottom: '2px solid var(--border-dim)', marginBottom: 16 }}>
+        {TABS.map(t => {
+          const isActive = tab === t.key;
+          const isSbo    = t.key === 'sbo';
+          return (
+            <button key={t.key} onClick={() => setTab(t.key)} style={{
+              fontFamily: M, fontSize: 8, letterSpacing: 2, padding: '9px 18px',
+              background: isActive ? (isSbo ? `${SBO_GOLD}08` : 'var(--bg-surface)') : 'transparent',
+              border: 'none',
+              borderBottom: `2px solid ${isActive ? t.accent : 'transparent'}`,
+              marginBottom: -2, cursor: 'pointer',
+              color: isActive ? t.accent : 'var(--text-muted)',
+              textShadow: isActive && isSbo ? `0 0 12px ${SBO_GOLD}66` : 'none',
+            }}>
+              {t.label}
+              {isSbo && !isActive && (
+                <span style={{ display: 'inline-block', width: 4, height: 4, borderRadius: '50%',
+                  background: SBO_GOLD, marginLeft: 5, verticalAlign: 'middle',
+                  boxShadow: `0 0 4px ${SBO_GOLD}` }} />
+              )}
+            </button>
+          );
+        })}
       </div>
 
       {/* Match detail overlay (global) */}
@@ -2111,6 +2136,7 @@ export default function AdminOddsMonitor() {
         {tab === 'monitor' && <MonitorTab bookmakers={bookmakers} />}
         {tab === 'probe'   && <ProbeTab   bookmakers={bookmakers} />}
         {tab === 'odds'    && <OddsViewTab bookmakers={bookmakers} onMatchClick={setDetailMatch} />}
+        {tab === 'sbo'     && <SboTab onMatchClick={setDetailMatch} />}
         {tab === 'config'  && <BookmakerConfigTab bookmakers={bookmakers} onRefresh={loadBks} />}
       </div>
 
