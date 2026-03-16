@@ -262,7 +262,7 @@ function MonitorTab({ bookmakers }: { bookmakers: Bookmaker[] }) {
         <Stat label="LIVE MATCHES"     value={data?.live_matches    ?? '…'} color="var(--cyan)" />
         <Stat label="CACHED UPCOMING"  value={data?.cached_upcoming ?? '…'} color="var(--text-muted)" sub="keys" />
         <Stat label="CACHED LIVE"      value={data?.cached_live     ?? '…'} color="var(--text-muted)" sub="keys" />
-        <Stat label="BOOKMAKERS"       value={bookmakers.filter(b=>b.is_active).length} color="#fb923c" />
+        <Stat label="BOOKMAKERS"       value={bookmakers?.filter(b=>b.is_active).length} color="#fb923c" />
       </div>
 
       {/* Beat status */}
@@ -2075,7 +2075,7 @@ export default function AdminOddsMonitor() {
         <div>
           <h1 style={{ fontFamily:M, fontSize:20, fontWeight:800, letterSpacing:3, margin:0, color:'var(--acid)' }}>ODDS MONITOR</h1>
           <p style={{ fontFamily:M, fontSize:8, letterSpacing:3, color:'var(--text-muted)', marginTop:4, marginBottom:0 }}>
-            {bookmakers.filter(b=>b.is_active).length} ACTIVE BOOKMAKERS · CELERY WORKERS
+            {bookmakers?.filter(b=>b.is_active).length} ACTIVE BOOKMAKERS · CELERY WORKERS
           </p>
         </div>
         <a href="/odds/sport/Football" target="_blank" style={{ ...s.ghost, textDecoration:'none', fontSize:8 }}>

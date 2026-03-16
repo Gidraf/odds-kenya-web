@@ -546,7 +546,7 @@ function MultiBookmakerSelect({ bookmakers, selected, onChange }: {
     onChange(selected.includes(id) ? selected.filter(x => x !== id) : [...selected, id]);
   };
 
-  const filtered = bookmakers.filter(b =>
+  const filtered = bookmakers?.filter(b =>
     !search || b.name.toLowerCase().includes(search.toLowerCase()) || (b.domain ?? '').toLowerCase().includes(search.toLowerCase())
   );
   const available = filtered.filter(b => !selected.includes(b.id));

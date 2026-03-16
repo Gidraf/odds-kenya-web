@@ -389,7 +389,7 @@ export default function MatchDetailView({
 
   // Bookmakers that have this match
   const activeBkNames = Object.keys(match.bookmakers);
-  const bkList = bookmakers.filter(b => activeBkNames.includes(b.name));
+  const bkList = bookmakers?.filter(b => activeBkNames.includes(b.name));
 
   const fetchAll = useCallback(async () => {
     setLoading(prev => tick === 0 ? true : prev);

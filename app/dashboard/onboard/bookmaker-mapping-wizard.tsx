@@ -163,7 +163,7 @@ function Step1({ bookmakers, onSelect }: {
 }) {
   const [search, setSearch]       = useState('');
   const [isPrimary, setIsPrimary] = useState(false);
-  const filtered = bookmakers.filter(b =>
+  const filtered = bookmakers?.filter(b =>
     (b.name || b.domain).toLowerCase().includes(search.toLowerCase())
   );
   return (
