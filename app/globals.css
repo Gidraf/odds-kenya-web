@@ -1,0 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Barlow+Condensed:wght@300;400;500;600;700;800&family=Barlow:wght@300;400;500&display=swap');
+
+:root {
+  --bg-void:       #07080a;
+  --bg-base:       #0d0f12;
+  --bg-surface:    #111419;
+  --bg-elevated:   #161b22;
+  --bg-hover:      #1c2330;
+
+  --border-dim:    #1e2530;
+  --border-base:   #252d3a;
+  --border-bright: #2e3a4a;
+
+  --acid:          #c6f135;   /* lime-yellow primary accent */
+  --acid-dim:      #8aab1a;
+  --acid-glow:     rgba(198,241,53,0.15);
+
+  --cyan:          #00d4e8;
+  --cyan-dim:      #0099aa;
+  --cyan-glow:     rgba(0,212,232,0.12);
+
+  --red:           #ff3d5a;
+  --red-dim:       #c41e35;
+  --green:         #00e676;
+  --green-dim:     #00a352;
+  --amber:         #ffb300;
+
+  --text-primary:  #e8edf5;
+  --text-secondary:#7a8799;
+  --text-muted:    #3d4a5c;
+
+  --font-display:  'Barlow Condensed', sans-serif;
+  --font-body:     'Barlow', sans-serif;
+  --font-mono:     'IBM Plex Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: var(--bg-void);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--bg-base); }
+::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 2px; }
+
+/* Selection */
+::selection { background: var(--acid-glow); color: var(--acid); }
+
+/* Utility animations */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 8px var(--acid-glow); }
+  50%       { box-shadow: 0 0 20px var(--acid-glow), 0 0 40px var(--acid-glow); }
+}
