@@ -961,7 +961,7 @@ export default function BookmakerDetailManager() {
     try {
       const qs  = search?`?q=${encodeURIComponent(search)}`:'';
       const res = await fetchWithAuth(`/admin/bookmakers${qs}`);
-      if (res.ok) {const result = await res.json(); if(result.items)  {console.log(result); setBookmakers(result)}}
+      if (res.ok) {const result = await res.json(); if(result.items)  {console.log(result); setBookmakers(result.items)}}
       else { showToast('✗ Failed to load')};
     } catch { showToast('✗ Network error'); }
     finally  { setLoading(false); }
