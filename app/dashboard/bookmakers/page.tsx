@@ -961,8 +961,8 @@ export default function BookmakerDetailManager() {
     try {
       const qs  = search?`?q=${encodeURIComponent(search)}`:'';
       const res = await fetchWithAuth(`/admin/bookmakers${qs}`);
-      if (res.ok) {const result = await res.json(); if(result.items)  {console.log(result); setBookmakers(result.items)}}
-      else { showToast('✗ Failed to load')};
+      if (res.ok) setBookmakers(await res.json());
+      else showToast('✗ Failed to load');
     } catch { showToast('✗ Network error'); }
     finally  { setLoading(false); }
   },[search]);
@@ -981,7 +981,7 @@ export default function BookmakerDetailManager() {
   const handleDelete=async()=>{ if(!deleting)return; const res=await fetchWithAuth(`/admin/bookmakers/${deleting.id}`,{method:'DELETE'}); if(res.ok){setBookmakers(prev=>prev.filter(b=>b.id!==deleting.id));showToast(`✓ ${deleting.name||deleting.domain} deleted`);}else showToast('✗ Delete failed'); setDeleting(null); };
   const toggleActive=async(bm:Bookmaker)=>{ const res=await fetchWithAuth(`/bookmaker/${bm.id}/activate`,{method:'POST'}); if(res.ok){const u=await res.json();setBookmakers(prev=>prev.map(b=>b.id===bm.id?{...b,is_active:u.is_active}:b));} };
   const clearWarn=async(bm:Bookmaker)=>{ const res=await fetchWithAuth(`/bookmaker/${bm.id}/clear-warn`,{method:'POST'}); if(res.ok){setBookmakers(prev=>prev.map(b=>b.id===bm.id?{...b,needs_ui_intervention:false}:b));showToast('✓ Warning cleared');} };
-  const warnCount=bookmakers?.filter(b=>b.needs_ui_intervention).length;
+  const warnCount=bookmakers.filter(b=>b.needs_ui_intervention).length;
 
   return (
     <div style={s.root}>
