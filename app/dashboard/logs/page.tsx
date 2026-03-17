@@ -15,7 +15,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { fetchWithAuth } from '../../lib/api';
-import MatchDetailView from './MatchDetailView';
+import MatchDetailView from './match-details';
 import SboTab from './SboTab';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
